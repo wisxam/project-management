@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root,
+.app {
+  height: 100%;
+  width: 100%;
+  @apply text-sm;
+  @apply bg-white;
+  @apply dark:bg-black;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  @apply bg-gray-300 dark:bg-gray-800;
+}
+
+*::-webkit-scrollbar-thumb {
+  @apply rounded bg-gray-500;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-600;
+}
+
+*::-webkit-scrollbar-thumb:active {
+  @apply bg-gray-700;
+}
+
+/* TIMELINE STYLING */
+.timeline ._3_ygE {
+  @apply rounded-tl-md border border-r-0 border-[#e6e4e4] dark:border-stroke-dark;
+}
+.timeline ._2eZzQ {
+  @apply border-[#e6e4e4] dark:border-stroke-dark;
+}
+.timeline ._2dZTy {
+  @apply fill-white dark:fill-dark-secondary;
+}
+.timeline ._2dZTy:nth-child(even) {
+  @apply fill-[#f5f5f5] dark:fill-dark-tertiary;
+}
+.timeline ._35nLX {
+  @apply fill-white stroke-[#e6e4e4] dark:fill-dark-secondary dark:stroke-stroke-dark;
+}
+.timeline ._9w8d5 {
+  @apply fill-[#333] dark:fill-white;
+}
+.timeline ._34SS0 {
+  @apply bg-white dark:bg-dark-secondary;
+}
+.timeline ._34SS0:nth-of-type(even) {
+  @apply bg-[#f5f5f5] dark:bg-dark-tertiary;
+}
+.timeline ._RuwuK,
+.timeline ._3rUKi,
+.timeline ._1rLuZ {
+  @apply stroke-[#e6e4e4] dark:stroke-stroke-dark;
+}
+.timeline ._3ZbQT {
+  @apply border-l-0 border-[#e6e4e4] dark:border-stroke-dark;
+}
+.timeline ._3T42e {
+  @apply bg-white dark:bg-dark-secondary;
+}
+.timeline ._29NTg {
+  @apply dark:text-neutral-500;
+}
+
+.timeline .task-name:hover,
+.timeline .from-date:hover,
+.timeline .to-date:hover {
+  @apply bg-blue-100 text-black dark:bg-blue-900 dark:text-white;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 4px;
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+}
