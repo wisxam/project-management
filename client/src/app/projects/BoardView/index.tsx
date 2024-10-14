@@ -168,7 +168,6 @@ const Task = ({ task }: TaskProps) => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      // Safe to access DOM or use libraries that depend on it
       const handleClickOutside = (event: MouseEvent) => {
         if (
           deleteTabRef.current &&
