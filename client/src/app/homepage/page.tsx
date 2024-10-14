@@ -209,7 +209,6 @@ const HomePageSelector = () => {
         <ModalUpdateProject
           isOpen={isModalUpdateProjectOpen}
           onClose={() => setIsModalUpdateProjectOpen(false)}
-          id={String(selectedProjectId)}
           project={projects?.find((p) => p.id === selectedProjectId)}
         />
       )}
