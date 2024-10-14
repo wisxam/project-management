@@ -7,11 +7,11 @@ import morgan from "morgan";
 
 // Route Imports
 
-import projectRoutes from "../routes/projectRoutes";
-import taskRoutes from "../routes/taskRoutes";
-import searchRoutes from "../routes/searchRoutes";
-import userRoutes from "../routes/usersRoutes";
-import teamRoutes from "../routes/teamRoutes";
+import projectRoutes from "./routes/projectRoutes";
+import taskRoutes from "./routes/taskRoutes";
+import searchRoutes from "./routes/searchRoutes";
+import userRoutes from "./routes/usersRoutes";
+import teamRoutes from "./routes/teamRoutes";
 
 // Configs
 
