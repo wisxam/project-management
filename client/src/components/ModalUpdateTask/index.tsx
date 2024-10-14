@@ -239,13 +239,14 @@ const ModalUpdateTask = ({ isOpen, onClose, id, task }: Props) => {
           onChange={(e) => setAssignedUserId(e.target.value)}
           disabled={isLoading}
         />
-
         <button
           type="submit"
-          className="w-full rounded bg-green-500 p-3 text-white hover:bg-green-600"
+          className={`w-full rounded bg-green-500 p-3 text-white ${
+            isLoading ? "cursor-not-allowed opacity-50" : "hover:bg-green-600"
+          }`}
           disabled={isLoading || !isFormValid()}
         >
-          Update Task
+          {isLoading ? "Updating..." : "Update Task"}
         </button>
       </form>
     </Modal>

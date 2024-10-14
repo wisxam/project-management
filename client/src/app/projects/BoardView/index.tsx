@@ -32,15 +32,25 @@ const BoardView = ({ id, setIsModalNewTaskOpen }: BoardProps) => {
     data: tasks,
     isLoading,
     error,
-  } = useGetTasksQuery({ projectId: Number(id) }); // Pass in the project id as number
+  } = useGetTasksQuery({ projectId: Number(id) });
 
-  const [updateTaskStatus] = useUpdateTaskStatusMutation({}); // The updateTaskStatus is just a name that will be used to trigger the api fucntion of useUpdateTaskStatusMutation()
+  const [updateTaskStatus] = useUpdateTaskStatusMutation();
+  const [loading, setLoading] = useState(false);
 
-  const moveTask = (taskId: number, toStatus: string) => {
-    updateTaskStatus({ taskId, status: toStatus }); // Since taskId in useUpdateTaskStatusMutation() is the same name as taskId prop in moveTask then no need to taskId: taskId
+  const moveTask = async (taskId: number, toStatus: string) => {
+    setLoading(true);
+    try {
+      await updateTaskStatus({ taskId, status: toStatus }).unwrap();
+
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      console.error("Failed to update task status:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (isLoading) {
+  // Show loading indicator
+  if (isLoading || loading) {
     return (
       <div className="flex h-full items-center justify-center">
         <l-zoomies size="40" speed="1.75" color="gray" />
@@ -55,22 +65,19 @@ const BoardView = ({ id, setIsModalNewTaskOpen }: BoardProps) => {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 xl:grid-cols-4">
-        {taskStatus.map((status) => {
-          return (
-            <TaskColumn
-              key={status}
-              status={status}
-              tasks={tasks || []}
-              moveTask={moveTask}
-              setIsModalNewTaskOpen={setIsModalNewTaskOpen}
-            />
-          );
-        })}
+        {taskStatus.map((status) => (
+          <TaskColumn
+            key={status}
+            status={status}
+            tasks={tasks || []}
+            moveTask={moveTask}
+            setIsModalNewTaskOpen={setIsModalNewTaskOpen}
+          />
+        ))}
       </div>
     </DndProvider>
-  ); // Use the drag n drop provider React dnd
+  );
 };
-
 type TaskColumnProps = {
   status: string;
   tasks: TaskType[];
