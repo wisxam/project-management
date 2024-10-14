@@ -167,20 +167,23 @@ const Task = ({ task }: TaskProps) => {
   };
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        deleteTabRef.current &&
-        !deleteTabRef.current.contains(event.target as Node)
-      ) {
-        setisAdjustingTabOpened(false);
-      }
-    };
+    if (typeof window !== "undefined") {
+      // Safe to access DOM or use libraries that depend on it
+      const handleClickOutside = (event: MouseEvent) => {
+        if (
+          deleteTabRef.current &&
+          !deleteTabRef.current.contains(event.target as Node)
+        ) {
+          setisAdjustingTabOpened(false);
+        }
+      };
 
-    document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }
   }, []);
 
   const [{ isDragging }, drag] = useDrag(() => ({
