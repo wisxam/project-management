@@ -19,6 +19,7 @@ import { useAppSelector } from "./redux";
 import { useGetProjectsQuery } from "./state/api";
 import { dataGridClassNames, dataGridSxStyles } from "./projects/lib/utils";
 import ModalNewProject from "./projects/ModalNewProject";
+import TailChaseLoader from "@/components/TailChaseLoader";
 
 const CustomToolbar = () => (
   <GridToolbarContainer className="toolbar flex gap-2">
@@ -159,7 +160,9 @@ const Home = () => {
 
   if (isLoading) {
     return (
-      <div className="flex h-full items-center justify-center">loading</div>
+      <div className="flex h-full items-center justify-center">
+        <TailChaseLoader />
+      </div>
     );
   }
 
