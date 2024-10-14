@@ -11,10 +11,9 @@ import {
 import { useGetTeamsQuery } from "../state/api";
 import Header from "@/components/Header";
 import { useAppSelector } from "../redux";
-import { tailChase } from "ldrs";
-import { dataGridClassNames, dataGridSxStyles } from "../projects/lib/utils";
 
-tailChase.register();
+import { dataGridClassNames, dataGridSxStyles } from "../projects/lib/utils";
+import TailChaseLoader from "@/components/TailChaseLoader";
 
 const columns: GridColDef[] = [
   {
@@ -60,7 +59,7 @@ const Teams = () => {
   if (isLoading) {
     return (
       <div className="flex h-full items-center justify-center">
-        <l-tail-chase size="40" speed="1.75" color="gray" />
+        <TailChaseLoader />
       </div>
     );
   }

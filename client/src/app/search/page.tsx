@@ -1,81 +1,87 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useSearchTermQuery } from "../state/api";
-import { debounce } from "lodash";
-import Header from "@/components/Header";
-import { tailChase } from "ldrs";
-import TaskCard from "@/components/PagesComponents/TaskCard";
-import ProjectCard from "@/components/ProjectCard";
-import UserCard from "@/components/UsersCard";
-import { SearchResults } from "../types/searchResults";
+import dynamic from "next/dynamic";
 
-tailChase.register();
+const TaskCard = dynamic(
+  () => import("@/components/PagesComponents/TaskCard"),
+  { ssr: false },
+);
+const ProjectCard = dynamic(() => import("@/components/ProjectCard"), {
+  ssr: false,
+});
+const UserCard = dynamic(() => import("@/components/UsersCard"), {
+  ssr: false,
+});
+
+import Header from "@/components/Header";
+import { debounce } from "lodash";
+import React, { useEffect, useState } from "react";
+import { useSearchTermQuery } from "../state/api";
+import TailChaseLoader from "@/components/TailChaseLoader";
 
 const Search = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [localSearchResult, setLocalSearchResult] = useState<SearchResults>();
   const {
-    data: searchResult,
+    data: searchResults,
     isLoading,
     isError,
-  } = useSearchTermQuery(searchTerm, { skip: searchTerm.length < 3 });
+  } = useSearchTermQuery(searchTerm, {
+    skip: searchTerm.length < 3,
+  });
 
   const handleSearch = debounce(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value;
-      setSearchTerm(value);
-      if (value.length < 3) {
-        setLocalSearchResult(undefined);
-      }
+      setSearchTerm(event.target.value);
     },
     500,
   );
 
   useEffect(() => {
-    if (searchResult) {
-      setLocalSearchResult(searchResult);
-    }
-  }, [searchResult]);
+    return handleSearch.cancel;
+  }, [handleSearch.cancel]);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <TailChaseLoader />
+      </div>
+    );
+  }
 
   return (
     <div className="p-8">
       <Header name="Search" />
       <div>
         <input
-          type="search"
+          type="text"
           placeholder="Search..."
           className="w-1/2 rounded border p-3 shadow"
           onChange={handleSearch}
         />
       </div>
-
       <div className="p-5">
-        {isLoading && (
-          <div className="flex h-full items-center justify-center">
-            <l-tail-chase size="40" speed="1.75" color="gray" />
-          </div>
-        )}
-        {isError && <p>Error fetching search results</p>}
-        {!isLoading && !isError && localSearchResult && (
+        {isLoading && <p>Loading...</p>}
+        {isError && <p>Error occurred while fetching search results.</p>}
+        {!isLoading && !isError && searchResults && (
           <div>
-            {localSearchResult.tasks && localSearchResult.tasks?.length > 0 && (
-              <h2 className="dark:text-white">Tasks</h2>
+            {searchResults.tasks && searchResults.tasks?.length > 0 && (
+              <h2>Tasks</h2>
             )}
-            {localSearchResult.tasks?.map((task) => (
-              <TaskCard key={task.id} task={task} canDelete />
+            {searchResults.tasks?.map((task) => (
+              <TaskCard key={task.id} task={task} />
             ))}
-            {localSearchResult?.projects &&
-              localSearchResult.projects?.length > 0 && (
-                <h2 className="pb-5 dark:text-white">Projects</h2>
-              )}
-            {localSearchResult?.projects?.map((project) => (
+
+            {searchResults.projects && searchResults.projects?.length > 0 && (
+              <h2>Projects</h2>
+            )}
+            {searchResults.projects?.map((project) => (
               <ProjectCard key={project.id} project={project} />
             ))}
-            {localSearchResult.users && localSearchResult.users?.length > 0 && (
-              <h2 className="dark:text-white">Users</h2>
+
+            {searchResults.users && searchResults.users?.length > 0 && (
+              <h2>Users</h2>
             )}
-            {localSearchResult.users?.map((user) => (
+            {searchResults.users?.map((user) => (
               <UserCard key={user.userId} user={user} />
             ))}
           </div>

@@ -4,11 +4,10 @@ import { useAppSelector } from "@/app/redux";
 import { useGetProjectsQuery } from "@/app/state/api";
 import { useMemo, useState } from "react";
 import { DisplayOption, Gantt, ViewMode } from "gantt-task-react";
-import { tailChase } from "ldrs";
+
 import Header from "@/components/Header";
 import "gantt-task-react/dist/index.css";
-
-tailChase.register();
+import TailChaseLoader from "@/components/TailChaseLoader";
 
 type TaskTypeItems = "task" | "milestone" | "project";
 
@@ -47,7 +46,7 @@ const Timeline = () => {
   if (isLoading) {
     return (
       <div className="flex h-full items-center justify-center">
-        <l-tail-chase size="40" speed="1.75" color="gray" />
+        <TailChaseLoader />
       </div>
     );
   }

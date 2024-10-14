@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useGetProjectsQuery } from "../state/api";
-import { tailChase } from "ldrs";
+
 import {
   DataGrid,
   GridColDef,
@@ -18,8 +18,7 @@ import ModalNewProject from "../projects/ModalNewProject";
 import { format } from "date-fns";
 import ModalUpdateProject from "@/components/ModalUpdateProject";
 import ModalDeleteProject from "@/components/ModalDeleteProject";
-
-tailChase.register();
+import TailChaseLoader from "@/components/TailChaseLoader";
 
 const CustomToolbar = () => (
   <GridToolbarContainer className="toolbar flex gap-2">
@@ -161,7 +160,7 @@ const HomePageSelector = () => {
   if (isLoading) {
     return (
       <div className="flex h-full items-center justify-center">
-        <l-tail-chase size="40" speed="1.75" color="gray" />
+        <TailChaseLoader />
       </div>
     );
   }
