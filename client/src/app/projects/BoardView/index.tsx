@@ -7,7 +7,7 @@ import {
   useDrop,
 } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Task as TaskType } from "@/app/types/taskTypes";
 import { zoomies } from "ldrs";
 import { EllipsisVertical, PlusIcon } from "lucide-react";
@@ -165,25 +165,6 @@ const Task = ({ task }: TaskProps) => {
   const handleOpenUpdateModal = () => {
     setIsUpdateModalOpen(true);
   };
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const handleClickOutside = (event: MouseEvent) => {
-        if (
-          deleteTabRef.current &&
-          !deleteTabRef.current.contains(event.target as Node)
-        ) {
-          setisAdjustingTabOpened(false);
-        }
-      };
-
-      document.addEventListener("mousedown", handleClickOutside);
-
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }
-  }, []);
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "task",
