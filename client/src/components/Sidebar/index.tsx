@@ -31,7 +31,6 @@ import { useState } from "react";
 const Sidebar = () => {
   const [showProjects, setShowProjects] = useState(false);
   const [showPriorities, setShowPriorities] = useState(true);
-  const [selectedProjectId, setSelectedProjectId] = useState(null); // New state to track selected project
 
   const { data: project } = useGetProjectsQuery();
   const dispatch = useAppDispatch();

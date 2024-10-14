@@ -2,7 +2,7 @@ import { useCreateProjectMutation } from "@/app/state/api";
 import Modal from "@/components/PagesComponents/Modal";
 import { useState } from "react";
 import { formatISO } from "date-fns";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAppSelector } from "@/app/redux";
 
@@ -49,7 +49,7 @@ const ModalNewProject = ({ isOpen, onClose }: Props) => {
         },
       });
       resetForm();
-    } catch (error) {
+    } catch {
       const errorMessage = "Error Creating Project!";
       toast.error(errorMessage, {
         style: {
@@ -66,7 +66,6 @@ const ModalNewProject = ({ isOpen, onClose }: Props) => {
   const isFormValid = () => {
     return projectName && description && startDate && endDate;
   };
-
   const resetForm = () => {
     setProjectName("");
     setDescription("");

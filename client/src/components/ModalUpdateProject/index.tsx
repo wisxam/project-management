@@ -11,11 +11,10 @@ import { Project } from "@/app/types/projectTypes";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  id: string;
   project?: Project;
 }
 
-const ModalUpdateProject = ({ isOpen, onClose, id, project }: Props) => {
+const ModalUpdateProject = ({ isOpen, onClose, project }: Props) => {
   const [updateProject, { isLoading }] = useUpdateProjectMutation();
 
   const formatDateForInput = (date: string | undefined) => {
@@ -69,7 +68,7 @@ const ModalUpdateProject = ({ isOpen, onClose, id, project }: Props) => {
           backgroundColor: isDarkMode ? "#DFF6FF" : "#DFF6FF",
         },
       });
-    } catch (error: any) {
+    } catch {
       toast.error("Failed to update project!", {
         style: {
           backgroundColor: isDarkMode ? "#6A2C2C" : "#7F3B3B",

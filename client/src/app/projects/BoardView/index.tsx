@@ -160,11 +160,9 @@ const Task = ({ task }: TaskProps) => {
   const deleteTabRef = useRef<HTMLDivElement | null>(null);
   const [isModalDeleteTaskOpen, setIsModalDeleteTaskOpen] = useState(false);
 
-  const [activeTaskId, setActiveTaskId] = useState<number | null>(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
-  const handleOpenUpdateModal = (taskId: number) => {
-    setActiveTaskId(taskId);
+  const handleOpenUpdateModal = () => {
     setIsUpdateModalOpen(true);
   };
 
@@ -253,7 +251,7 @@ const Task = ({ task }: TaskProps) => {
                     className="block w-full rounded-lg px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-dark-tertiary"
                     onClick={() => {
                       setisAdjustingTabOpened(false);
-                      handleOpenUpdateModal(task.id);
+                      handleOpenUpdateModal();
                     }}
                   >
                     Update

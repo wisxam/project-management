@@ -26,7 +26,7 @@ const ModalDeleteProject = ({ isOpen, onClose, projectId }: Props) => {
           backgroundColor: isDarkMode ? "#DFF6FF" : "#DFF6FF",
         },
       });
-    } catch (error: unknown) {
+    } catch {
       const errorMessage = "Error Deleting Project";
       toast.error(errorMessage, {
         style: {

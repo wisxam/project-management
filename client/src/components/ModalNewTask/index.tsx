@@ -1,7 +1,7 @@
 import { useCreateTaskMutation } from "@/app/state/api";
 import Modal from "@/components/PagesComponents/Modal";
 import { useState } from "react";
-import { format, formatISO } from "date-fns";
+import { formatISO } from "date-fns";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Status } from "@/app/types/statusTypes";
@@ -16,10 +16,6 @@ type Props = {
 };
 
 const ModalNewTask = ({ isOpen, onClose, id = null }: Props) => {
-  const formatDateForInput = (date: string | undefined) => {
-    return date ? format(new Date(date), "yyyy-MM-dd") : "";
-  };
-
   const dispatch = useAppDispatch();
   const [createTask, { isLoading }] = useCreateTaskMutation();
   const [title, setTitle] = useState("");
@@ -88,7 +84,7 @@ const ModalNewTask = ({ isOpen, onClose, id = null }: Props) => {
         },
       });
       resetForm();
-    } catch (error: any) {
+    } catch {
       const errorMessage = "Failed to create task!";
       toast.error(errorMessage, {
         style: {

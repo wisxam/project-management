@@ -28,7 +28,7 @@ const ModalDeleteTask = ({ isOpen, onClose, taskId }: Props) => {
           backgroundColor: isDarkMode ? "#DFF6FF" : "#DFF6FF",
         },
       });
-    } catch (error: unknown) {
+    } catch {
       const errorMessage = "Error Deleting Task(s)";
       toast.error(errorMessage, {
         style: {

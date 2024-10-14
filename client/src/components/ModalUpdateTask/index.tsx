@@ -1,6 +1,6 @@
 import { useUpdateTaskMutation } from "@/app/state/api";
 import Modal from "@/components/PagesComponents/Modal";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { formatISO } from "date-fns";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -108,7 +108,7 @@ const ModalUpdateTask = ({ isOpen, onClose, id, task }: Props) => {
           backgroundColor: isDarkMode ? "#DFF6FF" : "#DFF6FF",
         },
       });
-    } catch (error: any) {
+    } catch {
       const errorMessage = "Failed to update task!";
       toast.error(errorMessage, {
         style: {
