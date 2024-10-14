@@ -1,7 +1,7 @@
-import HomePageSelector from "./homepage/page";
+// import HomePageSelector from "./homepage/page";
 
 const Home = () => {
-  return <HomePageSelector />;
+  return <div>asdasd</div>;
 };
 
 export default Home;
