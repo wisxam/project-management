@@ -20,6 +20,7 @@ import { useGetProjectsQuery } from "./state/api";
 import { dataGridClassNames, dataGridSxStyles } from "./projects/lib/utils";
 import ModalNewProject from "./projects/ModalNewProject";
 import TailChaseLoader from "@/components/TailChaseLoader";
+import { getToken } from "./auth/authService";
 
 const CustomToolbar = () => (
   <GridToolbarContainer className="toolbar flex gap-2">
@@ -69,7 +70,7 @@ const Home = () => {
       renderCell: (params) => (
         <div className="flex h-full w-full items-center justify-center">
           {params.row.startDate
-            ? format(new Date(params.row.startDate), "yyyy-MM-dd")
+            ? format(new Date(params.row.startDate), "dd-MM-yyyy")
             : "N/A"}
         </div>
       ),
@@ -83,7 +84,7 @@ const Home = () => {
       renderCell: (params) => (
         <div className="flex h-full w-full items-center justify-center">
           {params.row.endDate
-            ? format(new Date(params.row.endDate), "yyyy-MM-dd")
+            ? format(new Date(params.row.endDate), "dd-MM-yyyy")
             : "N/A"}
         </div>
       ),
@@ -152,9 +153,19 @@ const Home = () => {
   const { data: projects, isLoading, isError } = useGetProjectsQuery();
   const router = useRouter();
 
+  const token = getToken();
+
   const navigateToHomepage = (id: number) => {
     router.push(`/home/${id}`);
   };
+
+  const navigateToLogin = () => {
+    router.push("/login");
+  };
+
+  if (!token) {
+    navigateToLogin();
+  }
 
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 

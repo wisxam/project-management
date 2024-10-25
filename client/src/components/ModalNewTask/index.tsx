@@ -43,7 +43,7 @@ const ModalNewTask = ({ isOpen, onClose, id = null }: Props) => {
   };
 
   const handleSubmit = async () => {
-    if (!title || !authorUserId || !(id !== null || projectId)) return;
+    // if (!title || !authorUserId || !(id !== null || projectId)) return;
 
     const startDateObj = startDate
       ? new Date(`${startDate}T00:00:00`)
@@ -61,17 +61,19 @@ const ModalNewTask = ({ isOpen, onClose, id = null }: Props) => {
 
     try {
       await createTask({
-        title,
-        description,
-        status,
-        priority,
-        tags,
-        startDate: newFormattedStartDate,
-        dueDate: newFormattedDueDate,
-        authorUserId: parseInt(authorUserId),
-        assignedUserId: parseInt(assignedUserId),
-        points: parseInt(points),
-        projectId: id === null ? Number(projectId) : Number(id),
+        projectId: Number(id),
+        taskData: {
+          title,
+          description,
+          status,
+          priority,
+          tags,
+          startDate: newFormattedStartDate,
+          dueDate: newFormattedDueDate,
+          authorUserId: parseInt(authorUserId),
+          assignedUserId: parseInt(assignedUserId),
+          points: parseInt(points),
+        },
       }).unwrap();
       sideBarCollapse();
       toast.success("Task created successfully!", {
@@ -99,7 +101,7 @@ const ModalNewTask = ({ isOpen, onClose, id = null }: Props) => {
   };
 
   const isFormValid = () => {
-    return title && authorUserId;
+    return title /*authorUserId*/;
   };
 
   const resetForm = () => {
@@ -222,9 +224,6 @@ const ModalNewTask = ({ isOpen, onClose, id = null }: Props) => {
           onChange={(e) => setAuthorUserId(e.target.value)}
           disabled={isLoading}
         />
-        {!authorUserId && (
-          <span className="text-red-500">Author user is required</span>
-        )}
         <input
           type="text"
           className={inputStyles}
@@ -247,7 +246,7 @@ const ModalNewTask = ({ isOpen, onClose, id = null }: Props) => {
           className={`focus-offset-2 mt-4 flex w-full justify-center rounded-md border border-transparent bg-blue-primary px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 ${
             !isFormValid() || isLoading ? "cursor-not-allowed opacity-50" : ""
           }`}
-          disabled={!isFormValid() || isLoading}
+          disabled={isLoading}
         >
           {isLoading ? "Creating..." : "Create Task"}
         </button>

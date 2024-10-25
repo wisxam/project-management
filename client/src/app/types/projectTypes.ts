@@ -5,3 +5,8 @@ export interface Project {
   startDate?: string;
   endDate?: string;
 }
+
+export interface AccessedProjects {
+  projectId: number;
+  projectName: string;
+}

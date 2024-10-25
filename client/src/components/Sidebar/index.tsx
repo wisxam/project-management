@@ -2,8 +2,11 @@
 
 import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsSidebarCollapsed } from "@/app/state";
-import { useGetProjectsQuery } from "@/app/state/api";
-import { Project } from "@/app/types/projectTypes";
+import {
+  useGetProjectsQuery,
+  useGetUserAccessedProjectsQuery,
+} from "@/app/state/api";
+import { AccessedProjects, Project } from "@/app/types/projectTypes";
 import { SidebarLinksProps } from "@/app/types/sidebarLinksProps";
 import {
   AlertCircle,
@@ -31,9 +34,14 @@ import { useState } from "react";
 
 const Sidebar = () => {
   const [showProjects, setShowProjects] = useState(false);
+  const [showAccessedProjects, setShowAccessedProjects] = useState(false);
   const [showPriorities, setShowPriorities] = useState(true);
 
-  const { data: project } = useGetProjectsQuery();
+  // Add loading and error handling for both queries
+  const { data: project, isLoading: isProjectLoading } = useGetProjectsQuery();
+  const { data: accessedProjects, isLoading: isAccessedProjectsLoading } =
+    useGetUserAccessedProjectsQuery();
+
   const dispatch = useAppDispatch();
   const isSidebarCollapsed = useAppSelector(
     (state) => state.global.isSidebarCollapsed,
@@ -43,6 +51,7 @@ const Sidebar = () => {
     transition-all duration-600 h-full z-40 dark:bg-black overflow-y-auto 
     ${isSidebarCollapsed ? "w-0 hidden" : "w-64"}
   overflow-x-hidden`;
+
   return (
     <div className={sidebarClassNames}>
       <div className="flex h-[100%] w-full flex-col justify-start">
@@ -75,7 +84,6 @@ const Sidebar = () => {
             </div>
           </div>
         </div>
-        {/* Navbar links */}
         <nav className="z-10 flex w-full flex-col gap-4">
           <SidebarLinks icon={Home} href={"/"} label="Home" />
           <SidebarLinks icon={Briefcase} href={"/timeline"} label="Timeline" />
@@ -90,11 +98,8 @@ const Sidebar = () => {
           />
         </nav>
 
-        {/* Projects Links */}
         <button
-          onClick={() => {
-            setShowProjects(!showProjects);
-          }}
+          onClick={() => setShowProjects(!showProjects)}
           className="flex w-full items-center justify-between px-8 py-3 text-gray-500 hover:bg-gray-100"
         >
           <span className="">Projects</span>
@@ -104,15 +109,37 @@ const Sidebar = () => {
             <ChevronDown className="h-5 w-5" />
           )}
         </button>
-        {/* Projects List */}
 
-        {showProjects && project && <ProjectsRender projects={project} />}
+        {isProjectLoading ||
+          (isAccessedProjectsLoading && (
+            <div className="flex h-full items-center justify-center">
+              <l-zoomies size="40" speed="1.75" color="gray" />
+            </div>
+          ))}
 
-        {/* Priorities Links */}
+        {showProjects && project && !isProjectLoading && (
+          <ProjectsRender projects={project} />
+        )}
+
         <button
-          onClick={() => {
-            setShowPriorities(!showPriorities);
-          }}
+          onClick={() => setShowAccessedProjects(!showAccessedProjects)}
+          className="flex w-full items-center justify-between px-8 py-3 text-gray-500 hover:bg-gray-100"
+        >
+          <span className="">Accessed Projects</span>
+          {showAccessedProjects ? (
+            <ChevronUp className="h-5 w-5" />
+          ) : (
+            <ChevronDown className="h-5 w-5" />
+          )}
+        </button>
+        {showAccessedProjects &&
+          accessedProjects &&
+          !isAccessedProjectsLoading && (
+            <AccessedProjectsRender accessedProjects={accessedProjects} />
+          )}
+
+        <button
+          onClick={() => setShowPriorities(!showPriorities)}
           className="flex w-full items-center justify-between px-8 py-3 text-gray-500 hover:bg-gray-100"
         >
           <span className="">Priority</span>
@@ -198,6 +225,28 @@ const ProjectsRender = ({ projects }: ProjectRender) => {
             icon={Briefcase}
             label={proj.name}
             href={`/projects/${proj.id}`}
+          />
+        </div>
+      ))}
+    </div>
+  );
+};
+
+type AccessedProjectsProps = {
+  accessedProjects: AccessedProjects[];
+};
+
+const AccessedProjectsRender = ({
+  accessedProjects,
+}: AccessedProjectsProps) => {
+  return (
+    <div>
+      {accessedProjects?.map((project) => (
+        <div key={project.projectId} className="py-2">
+          <SidebarLinks
+            icon={Briefcase}
+            label={project.projectName}
+            href={`/projects/${project.projectId}`}
           />
         </div>
       ))}

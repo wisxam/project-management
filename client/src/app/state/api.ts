@@ -1,10 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Project } from "../types/projectTypes";
+import { AccessedProjects, Project } from "../types/projectTypes";
 import { Task } from "../types/taskTypes";
 import { SearchResults } from "../types/searchResults";
 import { User } from "../types/userTypes";
 import { Team } from "../types/teamTypes";
 import { getToken, setToken } from "../auth/authService";
+import { InvitationRequestStatus } from "../types/initationRequestStatus";
 import { InvitationRequestTypes } from "../types/invitationRequestTypes";
 
 export const api = createApi({
@@ -26,6 +27,7 @@ export const api = createApi({
     "Users",
     "Teams",
     "InvitationRequests",
+    "AccessedProjects",
   ],
   endpoints: (build) => ({
     loginUser: build.mutation<
@@ -81,11 +83,14 @@ export const api = createApi({
     //       : [{ type: "Tasks" as const }],
     // }),
 
-    createTask: build.mutation<Task, Partial<Task>>({
-      query: (task) => ({
-        url: "tasks",
+    createTask: build.mutation<
+      Task,
+      { projectId: number; taskData: Partial<Task> }
+    >({
+      query: ({ projectId, taskData }) => ({
+        url: `projects/${projectId}/task`,
         method: "POST",
-        body: task,
+        body: taskData,
       }),
       invalidatesTags: ["Tasks"],
     }),
@@ -219,7 +224,47 @@ export const api = createApi({
 
     getInvitationRequestsByOwner: build.query<InvitationRequestTypes[], void>({
       query: () => "invitation-requests",
-      providesTags: ["InvitationRequests"],
+      providesTags: (result) =>
+        result
+          ? result.map(({ id }) => ({
+              type: "InvitationRequests" as const,
+              id,
+            }))
+          : [{ type: "InvitationRequests" as const }],
+    }),
+
+    updateUserProjectAccess: build.mutation<
+      InvitationRequestStatus,
+      { requestId: number; status: InvitationRequestStatus }
+    >({
+      query: ({ requestId, status }) => ({
+        url: `invitation-requests/${requestId}`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: (result, error, { requestId }) => [
+        {
+          type: "InvitationRequests" as const,
+          id: requestId,
+        },
+      ],
+    }),
+
+    deleteUserProjectRequest: build.mutation<void, { requestId: number }>({
+      query: ({ requestId }) => ({
+        url: `invitation-requests/${requestId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, { requestId }) => [
+        { type: "InvitationRequests" as const, id: requestId },
+      ],
+    }),
+
+    getUserAccessedProjects: build.query<AccessedProjects[], void>({
+      query: () => ({
+        url: "projects/get/accessed-projects",
+      }),
+      providesTags: ["AccessedProjects"],
     }),
   }),
 });
@@ -240,4 +285,7 @@ export const {
   useGetTasksByUserQuery,
   useLoginUserMutation,
   useGetInvitationRequestsByOwnerQuery,
+  useUpdateUserProjectAccessMutation,
+  useDeleteUserProjectRequestMutation,
+  useGetUserAccessedProjectsQuery,
 } = api;

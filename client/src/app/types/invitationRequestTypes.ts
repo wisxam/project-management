@@ -1,9 +1,9 @@
-import { InitationRequestStatus } from "./initationRequestStatus";
+import { InvitationRequestStatus } from "./initationRequestStatus";
 
 export interface InvitationRequestTypes {
   id: number;
   projectId: string;
-  status: InitationRequestStatus;
+  status: InvitationRequestStatus;
   requestedAt: Date;
   inviteCodeId: string;
   projectOwnerId: number;
