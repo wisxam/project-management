@@ -4,12 +4,49 @@ import { Task } from "../types/taskTypes";
 import { SearchResults } from "../types/searchResults";
 import { User } from "../types/userTypes";
 import { Team } from "../types/teamTypes";
+import { getToken, setToken } from "../auth/authService";
+import { InvitationRequestTypes } from "../types/invitationRequestTypes";
 
 export const api = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL }), // Grabs the public base URL
+  baseQuery: fetchBaseQuery({
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
+    prepareHeaders: (headers) => {
+      const token = getToken();
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
   reducerPath: "api",
-  tagTypes: ["Projects", "Tasks", "searchTerm", "Users", "Teams"],
+  tagTypes: [
+    "Projects",
+    "Tasks",
+    "searchTerm",
+    "Users",
+    "Teams",
+    "InvitationRequests",
+  ],
   endpoints: (build) => ({
+    loginUser: build.mutation<
+      { access_token: string },
+      { email: string; password: string }
+    >({
+      query: (credentials) => ({
+        url: "/auth/login",
+        method: "POST",
+        body: credentials,
+      }),
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          setToken(data.access_token);
+        } catch (err) {
+          console.error("Login failed:", err);
+        }
+      },
+    }),
+
     getProjects: build.query<Project[], void>({
       query: () => "projects",
       providesTags: ["Projects"],
@@ -25,7 +62,7 @@ export const api = createApi({
     }),
 
     getTasks: build.query<Task[], { projectId: number }>({
-      query: ({ projectId }) => `tasks?projectId=${projectId}`,
+      query: ({ projectId }) => `projects/${projectId}`,
       providesTags: (result) =>
         result
           ? result.map(({ id }) => ({ type: "Tasks" as const, id }))
@@ -53,9 +90,12 @@ export const api = createApi({
       invalidatesTags: ["Tasks"],
     }),
 
-    updateTaskStatus: build.mutation<Task, { taskId: number; status: string }>({
-      query: ({ taskId, status }) => ({
-        url: `tasks/${taskId}/status`,
+    updateTaskStatus: build.mutation<
+      Task,
+      { taskId: number; projectId: number; status: string }
+    >({
+      query: ({ taskId, status, projectId }) => ({
+        url: `projects/${projectId}/update/status/${taskId}`,
         method: "PATCH",
         body: { status },
       }),
@@ -64,13 +104,18 @@ export const api = createApi({
       ],
     }),
 
-    deleteTask: build.mutation<void, number | number[]>({
-      query: (taskIds) => ({
-        url: Array.isArray(taskIds) ? `tasks/bulk-delete` : `tasks/${taskIds}`,
+    deleteTask: build.mutation<
+      void,
+      { taskIds: string | string[]; projectId: number }
+    >({
+      query: ({ taskIds, projectId }) => ({
+        url: Array.isArray(taskIds)
+          ? `projects/${projectId}/delete?ids=${taskIds.join(",")}`
+          : `projects/${projectId}/delete?ids=${taskIds}`,
         method: "DELETE",
-        body: Array.isArray(taskIds) ? { taskIds } : undefined,
+        body: Array.isArray(taskIds) ? { taskIds } : { taskIds: [taskIds] },
       }),
-      invalidatesTags: (result, error, taskIds) => [
+      invalidatesTags: (result, error, { taskIds }) => [
         ...(Array.isArray(taskIds)
           ? taskIds.map((id) => ({ type: "Tasks" as const, id }))
           : [{ type: "Tasks" as const, id: taskIds }]),
@@ -98,8 +143,8 @@ export const api = createApi({
       Task,
       { taskId: string; patchedBody: object; projectId: number }
     >({
-      query: ({ taskId, patchedBody }) => ({
-        url: `tasks/${taskId}`,
+      query: ({ taskId, patchedBody, projectId }) => ({
+        url: `projects/${projectId}/update/${taskId}`,
         method: "PATCH",
         body: patchedBody,
       }),
@@ -121,6 +166,10 @@ export const api = createApi({
           patchResult.undo();
         }
       },
+      invalidatesTags: (result, error, { taskId }) => [
+        { type: "Tasks" as const, id: taskId },
+        { type: "searchTerm" as const, id: "SEARCH" },
+      ],
     }),
 
     updateProject: build.mutation<
@@ -128,7 +177,7 @@ export const api = createApi({
       { projectId: number; patchedBody: Partial<Project> }
     >({
       query: ({ projectId, patchedBody }) => ({
-        url: `projects/${projectId}`,
+        url: `projects/update/${projectId}`,
         method: "PATCH",
         body: patchedBody,
       }),
@@ -151,19 +200,26 @@ export const api = createApi({
         }
       },
     }),
+
     deleteProject: build.mutation<Project, number>({
       query: (projectId) => ({
-        url: `projects/${projectId}`,
+        url: `projects/delete/${projectId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Projects"],
     }),
+
     getTasksByUser: build.query<Task[], number>({
       query: (userId) => `tasks/user/${userId}`,
       providesTags: (result, error, userId) =>
         result
           ? result.map(({ id }) => ({ type: "Tasks", id }))
           : [{ type: "Tasks", id: userId }],
+    }),
+
+    getInvitationRequestsByOwner: build.query<InvitationRequestTypes[], void>({
+      query: () => "invitation-requests",
+      providesTags: ["InvitationRequests"],
     }),
   }),
 });
@@ -182,4 +238,6 @@ export const {
   useUpdateProjectMutation,
   useDeleteProjectMutation,
   useGetTasksByUserQuery,
+  useLoginUserMutation,
+  useGetInvitationRequestsByOwnerQuery,
 } = api;

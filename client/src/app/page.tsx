@@ -140,7 +140,7 @@ const Home = () => {
               setSelectedProjectId(params.row.id);
               setIsModalDeleteProjectOpen(true);
             }}
-            className="flex h-10 w-32 items-center justify-center rounded-full bg-red-600 text-white hover:bg-red-600"
+            className="flex h-10 w-32 items-center justify-center rounded-full bg-red-700 text-white hover:bg-red-800"
           >
             Delete
           </button>

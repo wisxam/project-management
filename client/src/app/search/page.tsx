@@ -1,23 +1,15 @@
 "use client";
 
-import dynamic from "next/dynamic";
-
-const TaskCard = dynamic(
-  () => import("@/components/PagesComponents/TaskCard"),
-  { ssr: false },
-);
-const ProjectCard = dynamic(() => import("@/components/ProjectCard"), {
-  ssr: false,
-});
-const UserCard = dynamic(() => import("@/components/UsersCard"), {
-  ssr: false,
-});
+// import dynamic from "next/dynamic";
 
 import Header from "@/components/Header";
 import { debounce } from "lodash";
 import React, { useEffect, useState } from "react";
 import { useSearchTermQuery } from "../state/api";
 import TailChaseLoader from "@/components/TailChaseLoader";
+import TaskCard from "@/components/PagesComponents/TaskCard";
+import ProjectCard from "@/components/ProjectCard";
+import UserCard from "@/components/UsersCard";
 
 const Search = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -68,7 +60,7 @@ const Search = () => {
               <h2>Tasks</h2>
             )}
             {searchResults.tasks?.map((task) => (
-              <TaskCard key={task.id} task={task} />
+              <TaskCard key={task.id} task={task} canDelete canUpdate />
             ))}
 
             {searchResults.projects && searchResults.projects?.length > 0 && (

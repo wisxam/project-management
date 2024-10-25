@@ -21,6 +21,7 @@ import {
   ShieldAlert,
   User,
   Users,
+  Users2Icon,
   X,
 } from "lucide-react";
 import Image from "next/image";
@@ -80,8 +81,13 @@ const Sidebar = () => {
           <SidebarLinks icon={Briefcase} href={"/timeline"} label="Timeline" />
           <SidebarLinks icon={Search} href={"/search"} label="Search" />
           <SidebarLinks icon={Settings} href={"/settings"} label="Settings" />
-          <SidebarLinks icon={User} href={"/users"} label="users" />
+          <SidebarLinks icon={User} href={"/users"} label="Users" />
           <SidebarLinks icon={Users} href={"/team"} label="Teams" />
+          <SidebarLinks
+            icon={Users2Icon}
+            href={"/requested-users"}
+            label="Requested Users"
+          />
         </nav>
 
         {/* Projects Links */}
@@ -126,7 +132,7 @@ const Sidebar = () => {
             <SidebarLinks
               icon={ShieldAlert}
               href={"/priority/high"}
-              label="HIgh"
+              label="High"
             />
             <SidebarLinks
               icon={AlertTriangle}

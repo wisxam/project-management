@@ -23,6 +23,7 @@ import { Task } from "@/app/types/taskTypes";
 import { Priority } from "@/app/types/priorityTypes";
 import { Status } from "@/app/types/statusTypes";
 import ModalDeleteTask from "@/components/ModalDeleteTask";
+import TailChaseLoader from "@/components/TailChaseLoader";
 
 type Props = {
   params: { id: number };
@@ -89,7 +90,7 @@ const Homepage = ({ params }: Props) => {
   if (projectsLoading || tasksLoading) {
     return (
       <div className="flex h-full items-center justify-center">
-        <l-tail-chase size="40" speed="1.75" color="gray" />
+        <TailChaseLoader />
       </div>
     );
   }
@@ -232,6 +233,7 @@ const Homepage = ({ params }: Props) => {
         isOpen={isModalDeleteTaskOpen}
         onClose={() => setIsModalDeleteTaskOpen(false)}
         taskId={selectedRows as number[]}
+        projectId={String(tasks[0].id)}
       />
     </div>
   );

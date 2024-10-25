@@ -8,9 +8,10 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   taskId: number | number[];
+  projectId: string;
 };
 
-const ModalDeleteTask = ({ isOpen, onClose, taskId }: Props) => {
+const ModalDeleteTask = ({ isOpen, onClose, taskId, projectId }: Props) => {
   const [deleteTask, { isLoading }] = useDeleteTaskMutation();
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
   const handleDelete = async () => {
@@ -18,7 +19,10 @@ const ModalDeleteTask = ({ isOpen, onClose, taskId }: Props) => {
     try {
       const taskIds = Array.isArray(taskId) ? taskId : [taskId];
       console.log("taskIds:", taskIds);
-      await deleteTask(taskIds).unwrap();
+      await deleteTask({
+        projectId: Number(projectId),
+        taskIds: taskIds.map(String),
+      }).unwrap();
       toast.success("Task(s) Deleted Successfully", {
         style: {
           backgroundColor: isDarkMode ? "#1D1D1D" : "#DFF6FF",

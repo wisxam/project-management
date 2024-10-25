@@ -21,18 +21,14 @@ import ModalUpdateTask from "@/components/ModalUpdateTask";
 zoomies.register();
 
 type BoardProps = {
-  id: string; // As it's provided from url
+  id: number; // As it's provided from url
   setIsModalNewTaskOpen: (isOpen: boolean) => void;
 };
 
 const taskStatus = ["To Do", "Work In Progress", "Under Review", "Completed"];
 
 const BoardView = ({ id, setIsModalNewTaskOpen }: BoardProps) => {
-  const {
-    data: tasks,
-    isLoading,
-    error,
-  } = useGetTasksQuery({ projectId: Number(id) });
+  const { data: tasks, isLoading, error } = useGetTasksQuery({ projectId: id });
 
   const [updateTaskStatus] = useUpdateTaskStatusMutation();
   const [loading, setLoading] = useState(false);
@@ -40,10 +36,13 @@ const BoardView = ({ id, setIsModalNewTaskOpen }: BoardProps) => {
   const moveTask = async (taskId: number, toStatus: string) => {
     setLoading(true);
     try {
-      await updateTaskStatus({ taskId, status: toStatus }).unwrap();
+      await updateTaskStatus({
+        taskId,
+        projectId: id,
+        status: toStatus,
+      }).unwrap();
 
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      console.error("Failed to update task status:", error);
     } finally {
       setLoading(false);
     }
@@ -317,6 +316,7 @@ const Task = ({ task }: TaskProps) => {
       <ModalDeleteTask
         isOpen={isModalDeleteTaskOpen}
         onClose={() => setIsModalDeleteTaskOpen(false)}
+        projectId={String(task.projectId)}
         taskId={task.id}
       />
       <ModalUpdateTask
