@@ -7,10 +7,13 @@ import { Team } from "../types/teamTypes";
 import { getToken, setToken } from "../auth/authService";
 import { InvitationRequestStatus } from "../types/initationRequestStatus";
 import { InvitationRequestTypes } from "../types/invitationRequestTypes";
+import { LoginResponse } from "../types/loginResponse";
+import { setUserId } from "../auth/userSlice";
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
+    credentials: "include",
     prepareHeaders: (headers) => {
       const token = getToken();
       if (token) {
@@ -31,7 +34,7 @@ export const api = createApi({
   ],
   endpoints: (build) => ({
     loginUser: build.mutation<
-      { access_token: string },
+      LoginResponse,
       { email: string; password: string }
     >({
       query: (credentials) => ({
@@ -39,16 +42,19 @@ export const api = createApi({
         method: "POST",
         body: credentials,
       }),
-      async onQueryStarted(arg, { queryFulfilled }) {
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           const { data } = await queryFulfilled;
+          // Set the token in the cookie
           setToken(data.access_token);
-        } catch (err) {
-          console.error("Login failed:", err);
+          // Dispatch action to set userId in Redux store
+          dispatch(setUserId(data.userId)); // Assuming you have a setUserId action in userSlice
+        } catch (error) {
+          // Handle the error if needed
+          console.error("Login failed:", error);
         }
       },
     }),
-
     getProjects: build.query<Project[], void>({
       query: () => "projects",
       providesTags: ["Projects"],
@@ -266,6 +272,12 @@ export const api = createApi({
       }),
       providesTags: ["AccessedProjects"],
     }),
+
+    getUserTasks: build.query<Task[], void>({
+      query: () => ({
+        url: "users/get/tasks",
+      }),
+    }),
   }),
 });
 
@@ -288,4 +300,5 @@ export const {
   useUpdateUserProjectAccessMutation,
   useDeleteUserProjectRequestMutation,
   useGetUserAccessedProjectsQuery,
+  useGetUserTasksQuery,
 } = api;

@@ -2,7 +2,7 @@
 
 import Header from "@/components/Header";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useState } from "react";
 
 import {
   DataGrid,
@@ -20,7 +20,6 @@ import { useGetProjectsQuery } from "./state/api";
 import { dataGridClassNames, dataGridSxStyles } from "./projects/lib/utils";
 import ModalNewProject from "./projects/ModalNewProject";
 import TailChaseLoader from "@/components/TailChaseLoader";
-import { getToken } from "./auth/authService";
 
 const CustomToolbar = () => (
   <GridToolbarContainer className="toolbar flex gap-2">
@@ -67,13 +66,7 @@ const Home = () => {
       width: 100,
       align: "center",
       headerAlign: "center",
-      renderCell: (params) => (
-        <div className="flex h-full w-full items-center justify-center">
-          {params.row.startDate
-            ? format(new Date(params.row.startDate), "dd-MM-yyyy")
-            : "N/A"}
-        </div>
-      ),
+      renderCell: (params) => formatDate(params.row.startDate),
     },
     {
       field: "endDate",
@@ -81,13 +74,7 @@ const Home = () => {
       width: 100,
       align: "center",
       headerAlign: "center",
-      renderCell: (params) => (
-        <div className="flex h-full w-full items-center justify-center">
-          {params.row.endDate
-            ? format(new Date(params.row.endDate), "dd-MM-yyyy")
-            : "N/A"}
-        </div>
-      ),
+      renderCell: (params) => formatDate(params.row.endDate),
     },
     {
       field: "projectAnalysis",
@@ -96,17 +83,12 @@ const Home = () => {
       align: "center",
       headerAlign: "center",
       renderCell: (params) => (
-        <div className="flex h-full w-full items-center justify-center">
-          <button
-            onClick={() => {
-              navigateToHomepage(params.row.id);
-            }}
-            className="flex h-10 w-32 items-center justify-center rounded-full bg-purple-600 text-white hover:bg-purple-700"
-          >
-            Analyze
-          </button>
-        </div>
+        <ActionButton
+          text="Analyze"
+          onClick={() => navigateToHomepage(params.row.id)}
+        />
       ),
+      minWidth: 90,
     },
     {
       field: "updateProject",
@@ -115,18 +97,12 @@ const Home = () => {
       align: "center",
       headerAlign: "center",
       renderCell: (params) => (
-        <div className="flex h-full w-full items-center justify-center">
-          <button
-            onClick={() => {
-              setSelectedProjectId(params.row.id);
-              setIsModalUpdateProjectOpen(true);
-            }}
-            className="flex h-10 w-32 items-center justify-center rounded-full bg-green-600 text-white hover:bg-green-700"
-          >
-            Update
-          </button>
-        </div>
+        <ActionButton
+          text="Update"
+          onClick={() => handleUpdateProject(params.row.id)}
+        />
       ),
+      minWidth: 90,
     },
     {
       field: "deleteProject",
@@ -135,39 +111,58 @@ const Home = () => {
       align: "center",
       headerAlign: "center",
       renderCell: (params) => (
-        <div className="flex h-full w-full items-center justify-center">
-          <button
-            onClick={() => {
-              setSelectedProjectId(params.row.id);
-              setIsModalDeleteProjectOpen(true);
-            }}
-            className="flex h-10 w-32 items-center justify-center rounded-full bg-red-700 text-white hover:bg-red-800"
-          >
-            Delete
-          </button>
-        </div>
+        <ActionButton
+          text="Delete"
+          onClick={() => handleDeleteProject(params.row.id)}
+        />
       ),
+      minWidth: 90,
     },
   ];
 
   const { data: projects, isLoading, isError } = useGetProjectsQuery();
   const router = useRouter();
 
-  const token = getToken();
+  const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
   const navigateToHomepage = (id: number) => {
     router.push(`/home/${id}`);
   };
 
-  const navigateToLogin = () => {
-    router.push("/login");
+  const handleUpdateProject = (projectId: number) => {
+    setSelectedProjectId(projectId);
+    setIsModalUpdateProjectOpen(true);
   };
 
-  if (!token) {
-    navigateToLogin();
-  }
+  const handleDeleteProject = (projectId: number) => {
+    setSelectedProjectId(projectId);
+    setIsModalDeleteProjectOpen(true);
+  };
 
-  const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
+  const formatDate = (date?: string) => {
+    return date ? format(new Date(date), "dd-MM-yyyy") : "N/A";
+  };
+
+  const ActionButton = ({
+    text,
+    onClick,
+  }: {
+    text: string;
+    onClick: () => void;
+  }) => (
+    <button
+      onClick={onClick}
+      className={`flex h-10 w-32 items-center justify-center rounded-full ${
+        text === "Analyze"
+          ? "bg-purple-600 hover:bg-purple-900"
+          : text === "Update"
+            ? "bg-green-600 hover:bg-green-900"
+            : "bg-red-900 hover:bg-red-800"
+      } text-white`}
+    >
+      {text}
+    </button>
+  );
 
   if (isLoading) {
     return (
@@ -188,7 +183,7 @@ const Home = () => {
         <div style={{ height: 650, width: "100%", overflowX: "auto" }}>
           <div style={{ minWidth: 600 }}>
             <DataGrid
-              rows={projects || []}
+              rows={projects}
               columns={columns}
               getRowId={(row) => row.id}
               pagination
@@ -228,7 +223,7 @@ const Home = () => {
         <ModalDeleteProject
           isOpen={isModalDeleteProjectOpen}
           onClose={() => setIsModalDeleteProjectOpen(false)}
-          projectId={Number(selectedProjectId)}
+          projectId={selectedProjectId}
         />
       )}
     </div>

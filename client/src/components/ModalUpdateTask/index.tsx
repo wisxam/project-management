@@ -6,8 +6,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Status } from "@/app/types/statusTypes";
 import { Priority } from "@/app/types/priorityTypes";
-import { useAppDispatch, useAppSelector } from "@/app/redux";
-import { setIsSidebarCollapsed } from "@/app/state";
+import { useAppSelector } from "@/app/redux";
 import { Task } from "@/app/types/taskTypes";
 import { format } from "date-fns";
 
@@ -19,10 +18,12 @@ type Props = {
 };
 
 const ModalUpdateTask = ({ isOpen, onClose, id, task }: Props) => {
-  const dispatch = useAppDispatch();
   const [updateTask, { isLoading }] = useUpdateTaskMutation({
     fixedCacheKey: id,
   });
+
+  const userId = useAppSelector((state) => state.user.userId);
+
   const formatDateForInput = (date: string | undefined) => {
     return date ? format(new Date(date), "yyyy-MM-dd") : "";
   };
@@ -46,17 +47,7 @@ const ModalUpdateTask = ({ isOpen, onClose, id, task }: Props) => {
   );
   const [points, setPoints] = useState(task?.points || "");
 
-  const isSideBarCollaped = useAppSelector(
-    (state) => state.global.isSidebarCollapsed,
-  );
-
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
-
-  const sideBarCollapse = () => {
-    if (!isSideBarCollaped) {
-      dispatch(setIsSidebarCollapsed(true));
-    }
-  };
 
   const handleSubmit = async () => {
     if (!title || !authorUserId) return;
@@ -98,7 +89,6 @@ const ModalUpdateTask = ({ isOpen, onClose, id, task }: Props) => {
         patchedBody,
         projectId: Number(task.projectId),
       }).unwrap();
-      sideBarCollapse();
       toast.success("Task updated successfully!", {
         style: {
           backgroundColor: isDarkMode ? "#1D1D1D" : "#DFF6FF",
@@ -223,22 +213,27 @@ const ModalUpdateTask = ({ isOpen, onClose, id, task }: Props) => {
             disabled={isLoading}
           />
         </div>
-        <input
-          type="text"
-          className={inputStyles}
-          placeholder="Author User ID"
-          value={authorUserId}
-          onChange={(e) => setAuthorUserId(e.target.value)}
-          disabled={isLoading}
-        />
-        <input
-          type="text"
-          className={inputStyles}
-          placeholder="Assigned User ID"
-          value={assignedUserId}
-          onChange={(e) => setAssignedUserId(e.target.value)}
-          disabled={isLoading}
-        />
+        {userId === task.authorUserId && (
+          <input
+            type="text"
+            className={inputStyles}
+            placeholder="Author User ID"
+            value={authorUserId}
+            onChange={(e) => setAuthorUserId(e.target.value)}
+            disabled={isLoading || userId !== task.authorUserId}
+          />
+        )}
+        {userId === task.authorUserId && (
+          <input
+            type="text"
+            className={inputStyles}
+            placeholder="Assigned User ID"
+            value={assignedUserId}
+            onChange={(e) => setAssignedUserId(e.target.value)}
+            disabled={isLoading || userId !== task.authorUserId}
+          />
+        )}
+
         <button
           type="submit"
           className={`w-full rounded bg-green-500 p-3 text-white ${

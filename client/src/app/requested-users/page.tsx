@@ -34,6 +34,7 @@ const RequestedUsers = () => {
       width: 150,
       align: "center",
       headerAlign: "center",
+      minWidth: 120,
     },
     {
       field: "userEmail",
@@ -41,6 +42,7 @@ const RequestedUsers = () => {
       width: 150,
       align: "center",
       headerAlign: "center",
+      minWidth: 140,
     },
     {
       field: "requestedAt",
@@ -55,6 +57,7 @@ const RequestedUsers = () => {
             : "N/A"}
         </div>
       ),
+      minWidth: 120,
     },
     {
       field: "projectId",
@@ -119,6 +122,7 @@ const RequestedUsers = () => {
           )}
         </div>
       ),
+      minWidth: 120,
     },
     {
       field: "decline",
@@ -155,6 +159,7 @@ const RequestedUsers = () => {
           )}
         </div>
       ),
+      minWidth: 130,
     },
     {
       field: "delete",
@@ -175,6 +180,7 @@ const RequestedUsers = () => {
           </button>
         </div>
       ),
+      minWidth: 90,
     },
   ];
 

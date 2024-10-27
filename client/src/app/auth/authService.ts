@@ -1,23 +1,17 @@
-export const TOKEN_KEY = "token"; // Key to store token in localStorage
+import Cookies from "js-cookie";
 
-// Save the token
 export const setToken = (token: string) => {
-  if (typeof window !== "undefined") {
-    localStorage.setItem(TOKEN_KEY, token);
-  }
+  Cookies.set("access_token", token, {
+    expires: 7,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
 };
 
-// Retrieve the token
-export const getToken = (): string | null => {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem(TOKEN_KEY);
-  }
-  return null;
+export const getToken = () => {
+  return Cookies.get("access_token");
 };
 
-// Remove the token (logout)
 export const removeToken = () => {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem(TOKEN_KEY);
-  }
+  Cookies.remove("access_token");
 };

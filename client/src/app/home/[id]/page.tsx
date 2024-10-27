@@ -82,11 +82,6 @@ const Homepage = ({ params }: Props) => {
   const [isModalDeleteTaskOpen, setIsModalDeleteTaskOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState<GridRowSelectionModel>([]);
 
-  // const handleDeleteTasks = () => {
-
-  //   // Implement deletion logic here, e.g., make an API call to delete the selected tasks.
-  // };
-
   if (projectsLoading || tasksLoading) {
     return (
       <div className="flex h-full items-center justify-center">
@@ -154,14 +149,16 @@ const Homepage = ({ params }: Props) => {
       };
 
   return (
-    <div className="container h-full w-[100%] bg-gray-100 bg-transparent p-8">
+    <div className="container mx-auto h-full p-4">
       <Header name="Project Management Dashboard" />
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+
+      {/* First Row: Task Priority and Task Status Charts */}
+      <div className="grid gap-4 md:grid-cols-2">
         <div className="rounded-lg bg-white p-4 shadow dark:bg-dark-secondary">
           <h3 className="mb-4 text-lg font-semibold dark:text-white">
             Task Priority Distribution
           </h3>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={250}>
             <BarChart data={taskDistribution}>
               <CartesianGrid
                 strokeDasharray="3 3"
@@ -180,9 +177,9 @@ const Homepage = ({ params }: Props) => {
           <h3 className="mb-4 text-lg font-semibold dark:text-white">
             Tasks Status
           </h3>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={250}>
             <PieChart>
-              <Pie dataKey="count" data={projectStatus} fill="#82ca9d" label>
+              <Pie dataKey="count" data={projectStatus} label>
                 {projectStatus?.map((_, index) => (
                   <Cell
                     key={`cell-${index}`}
@@ -195,45 +192,49 @@ const Homepage = ({ params }: Props) => {
             </PieChart>
           </ResponsiveContainer>
         </div>
+      </div>
 
-        <div className="rounded-lg bg-white p-4 shadow dark:bg-dark-secondary md:col-span-2">
-          <h3 className="mb-4 text-lg font-semibold dark:text-white">
-            Your Tasks
-          </h3>
+      {/* Second Row: Tasks Data Grid */}
+      <div className="mt-4 rounded-lg bg-white p-4 shadow dark:bg-dark-secondary">
+        <h3 className="mb-4 text-lg font-semibold dark:text-white">
+          Your Tasks
+        </h3>
 
-          {selectedRows?.length > 0 && (
-            <div className="mb-4">
-              <button
-                className="rounded bg-red-500 px-4 py-2 text-white"
-                onClick={() => setIsModalDeleteTaskOpen(true)}
-              >
-                Delete Selected Tasks
-              </button>
-            </div>
-          )}
-
-          <div style={{ height: 300, width: "100%" }}>
-            <DataGrid
-              rows={tasks || []}
-              columns={taskColumns}
-              checkboxSelection
-              loading={tasksLoading}
-              onRowSelectionModelChange={(newSelectionModel) => {
-                setSelectedRows(newSelectionModel);
-              }}
-              getRowClassName={() => "data-grid-row"}
-              getCellClassName={() => "data-grid-cell"}
-              className={dataGridClassNames}
-              sx={dataGridSxStyles(isDarkMode)}
-            />
+        {selectedRows.length > 0 && (
+          <div className="mb-4 text-center md:text-left">
+            <button
+              className="rounded bg-red-500 px-4 py-2 text-white"
+              onClick={() => setIsModalDeleteTaskOpen(true)}
+            >
+              Delete Selected Tasks
+            </button>
           </div>
+        )}
+
+        <div style={{ height: 400, width: "100%" }}>
+          <DataGrid
+            rows={tasks || []}
+            columns={taskColumns}
+            checkboxSelection
+            loading={tasksLoading}
+            onRowSelectionModelChange={(newSelectionModel) => {
+              setSelectedRows(newSelectionModel);
+            }}
+            getRowClassName={() => "data-grid-row"}
+            getCellClassName={() => "data-grid-cell"}
+            className={dataGridClassNames}
+            sx={dataGridSxStyles(isDarkMode)}
+          />
         </div>
       </div>
+
       <ModalDeleteTask
         isOpen={isModalDeleteTaskOpen}
         onClose={() => setIsModalDeleteTaskOpen(false)}
         taskId={selectedRows as number[]}
-        projectId={String(tasks[0].id)}
+        projectId={String(
+          tasks?.find((task) => task.id === selectedRows[0])?.projectId,
+        )}
       />
     </div>
   );

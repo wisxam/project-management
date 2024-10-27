@@ -83,7 +83,6 @@ const TaskCard = ({ task, canDelete, canUpdate }: Props) => {
           </button>
         </div>
       )}
-
       {canUpdate && (
         <div className="flex">
           <button
@@ -99,6 +98,7 @@ const TaskCard = ({ task, canDelete, canUpdate }: Props) => {
         isOpen={isModalDeleteTaskOpen}
         onClose={() => setIsModalDeleteTaskOpen(false)}
         taskId={task.id}
+        projectId={String(task?.projectId)}
       />
       <ModalUpdateTask
         isOpen={isModalUpdateTaskOpen}
