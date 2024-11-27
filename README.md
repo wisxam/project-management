@@ -1,89 +1,104 @@
-Overview
-This project management platform is built using Next.js for the frontend and NestJS for the server-side backend. It offers a comprehensive set of features to manage projects efficiently, including drag-and-drop task management, role-based access control, and detailed analytics.
-Key Features
-Task Management
-Drag and Drop: Users can easily manage tasks by dragging and dropping them across different stages.
-Task Assignment: Project owners can create and assign tasks to project leaders and team members.
-Role-Based Access: Different roles (project owner, project leader, team member) have distinct permissions and access levels.
-Access Control
-Request to Join: Users need to send a request to the project owner to join a project.
-Approval/Decline: Project owners have full control to either accept or decline join requests.
-Analytics
-Analysis Page: A dedicated page providing detailed analytics on tasks, including numbers and visual charts.
-Dialogs: Interactive dialogs for various actions and notifications.
-Technology Stack
-Frontend: Next.js
-TypeScript for type safety,
-MUI for styled components,
-RTK and RTK query for state management and api calls,
-React-dnd,
-React-toastify
-Backend: NestJS
-Node.js for server-side runtime
-TypeScript for type safety
-PostgreSQL for database management
-Getting Started
-Prerequisites
-Node.js (latest version)
-npm or yarn
-PostgreSQL or MongoDB (depending on the database choice)
-Installation
-Clone the Repository
-bash
-git clone https://github.com/wisxam/project-management/
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Project Management Platform</h1>
+    <p>A powerful tool for efficient project management using Next.js and NestJS.</p>
+  </header>
 
-Navigate to the Project Directory
-bash
-cd project-management-platform
+  <main>
+    <section id="features">
+      <h2>Key Features</h2>
+      <ul>
+        <li><strong>Task Management</strong>
+          <ul>
+            <li><b>Drag and Drop</b>: Easily manage tasks by dragging across stages.</li>
+            <li><b>Task Assignment</b>: Assign tasks to leaders and team members.</li>
+          </ul>
+        </li>
+        <li><strong>Access Control</strong>
+          <ul>
+            <li><b>Role-Based Access</b>: Permissions based on roles.</li>
+            <li><b>Request to Join</b>: Users send requests to join projects.</li>
+            <li><b>Approval/Decline</b>: Owners control access.</li>
+          </ul>
+        </li>
+        <li><strong>Analytics</strong>
+          <ul>
+            <li><b>Analysis Page</b>: Detailed task analytics with charts.</li>
+            <li><b>Interactive Dialogs</b>: Notifications and action dialogs.</li>
+          </ul>
+        </li>
+      </ul>
+      <section id="tech-stack">
+      <h2>Technology Stack</h2>
+      <ul>
+        <li><b>Frontend:</b> Next.js, TypeScript, Material UI, RTK & RTK Query, React-dnd, React-toastify</li>
+        <li><b>Backend:</b> NestJS, Node.js, TypeScript, PostgreSQL</li>
+      </ul>
+    </section>
+    </section>
+    <section id="setup">
+      <h2>Getting Started</h2>
+      <h3>Prerequisites</h3>
+      <ul>
+        <li>Node.js (latest version)</li>
+        <li>npm or yarn</li>
+        <li>PostgreSQL or MongoDB</li>
+      </ul>
+      <h3>Installation</h3>
+      <ol>
+        <li>Clone the repository:
+          <pre><code>git clone https://github.com/wisxam/project-management/</code></pre>
+        </li>
+        <li>Navigate to the project directory:
+          <pre><code>cd project-management-platform</code></pre>
+        </li>
+        <li>Install dependencies:
+          <pre><code>npm install</code></pre>
+        </li>
+        <li>Start the backend server:
+          <pre><code>cd backend
+npm run start:dev</code></pre>
+        </li>
+        <li>Start the frontend server:
+          <pre><code>cd frontend
+npm run dev</code></pre>
+        </li>
+      </ol>
+    </section>
+    <section id="usage">
+      <h2>Usage</h2>
+      <h3>User Roles</h3>
+      <ul>
+        <li><b>Project Owner</b>: Full control over projects and tasks.</li>
+        <li><b>Project Leader</b>: Manage assigned tasks and view analytics.</li>
+        <li><b>Team Member</b>: View and update assigned tasks.</li>
+      </ul>
+      <h3>Task Management</h3>
+      <p>Create and assign tasks, then manage them via drag-and-drop across stages.</p>
+      <h3>Analytics</h3>
+      <p>Use the analysis page for insights on tasks, including visual charts.</p>
+    </section>
+    </main>
 
-Install Dependencies
-bash
-npm install
-# or
-yarn install
+  <footer>
+    <p>Licensed under the MIT License.</p>
+  </footer>
+</body>
+</html>
 
-Start the Backend Server
-bash
-cd backend
-npm run start:dev
-# or
-yarn start:dev
 
-Start the Frontend Server
-bash
-cd frontend
-npm run dev
-# or
-yarn dev
+    
 
-Configuration
-Environment Variables
-Create a .env file in both the backend and frontend directories.
-Configure the necessary environment variables such as database credentials, server ports, etc.
-Database Setup
-Ensure your database is set up and running.
-Update the backend configuration to connect to your database.
-Usage
-User Roles
-Project Owner: Can create projects, assign tasks, manage access requests, and view analytics.
-Project Leader: Can manage tasks assigned to them and view project analytics.
-Team Member: Can view and update tasks assigned to them.
-Joining a Project
-Send a join request to the project owner.
-The project owner will receive the request and can either accept or decline it.
-Task Management
-Project owners can create tasks and assign them to project leaders or team members.
-Users can drag and drop tasks across different stages (e.g., To-Do, In Progress, Done).
-Analytics
-Navigate to the analysis page to view detailed statistics and charts related to tasks.
-Use interactive dialogs to get more information or perform actions.
-Contributing
-Contributions are welcome! Here’s how you can contribute:
-Fork the Repository
-Create a fork of the repository on GitHub.
-Create a Branch
-Create a new branch for your feature or bug fix.
-Commit Changes
-Commit your changes with meaningful commit messages.
-Open a Pull Request
-Open a pull request to the main repository.
+    
+
+    
+
+   
+  
